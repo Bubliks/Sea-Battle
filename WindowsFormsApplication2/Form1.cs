@@ -549,93 +549,85 @@ namespace WindowsFormsApplication2
             return new Pair<int, int>(e.X / WIDTH_BLOCK, e.Y / HEIGHT_BLOCK);
         }
 
+        public void ShotUser()
+        {
+
+        }
+
+        public void ShotBot()
+        {
+            Random r = new Random();
+            while (!hodkomp)
+            {
+                int i = r.Next(0, 10);
+                int j = r.Next(0, 10);
+
+                if (gamer[i, j] == 0)
+                {
+                    gr.FillEllipse(Brushes.Blue, (j) * pictureBox1.Width / 10 + 1 + (pictureBox1.Width / 10) / 4, (i) * pictureBox1.Height / 10 + 1 + (pictureBox1.Width / 10) / 4, pictureBox1.Width / 10 - 1 - (pictureBox1.Width / 10) / 2, pictureBox1.Height / 10 - 1 - (pictureBox1.Width / 10) / 2);
+                    gamer[i, j] = 2;
+                    hodkomp = true;
+                    hodgamer = false;
+                    chcomp = chcomp + 1;
+                    //SoundPlayer sp = new SoundPlayer("D:\\gun8.wav");
+                    //sp.Play();
+
+                }
+                else if (gamer[i, j] == 1)
+                {
+                    gamer[i, j] = 3; hodkomp = true; hodgamer = true;
+                    gr.FillRectangle(Brushes.Red, j * pictureBox1.Width / 10 + 1, (i) * pictureBox1.Height / 10 + 1, pictureBox1.Width / 10 - 1, pictureBox1.Height / 10 - 1);
+                    chcomp = chcomp + 1;
+                    unwin = unwin + 1;
+                    hodkomp = false;
+                    //SoundPlayer sp = new SoundPlayer("@D:\\gun8.wma");
+                    //sp.Play();
+                }
+            }
+        }
+
         private void pictureBox2_MouseClick(object sender, MouseEventArgs e)
         {
-            if (hodgamer == false)
+            while (!hodgamer)
             {
                 hodgamer = true;
-                for (int l = 0; l < comp.GetLength(0); l++)
-                    for (int g = 0; g < comp.GetLength(1); g++)
-                    {
-                        if (hodgamer)
-                        {
-                            if (e.X > g * pictureBox2.Width / 10 & e.X < (g + 1) * pictureBox2.Width / 10 & e.Y > (l) * pictureBox2.Height / 10 & e.Y < (l + 1) * pictureBox2.Height / 10)
-                            {
-                                if (comp[l, g] == 0)   
-                                {
-                                comp[l, g] = 2; hodgamer = true; hodkomp = false;
-                                gr2.FillEllipse(Brushes.Blue, (g) * pictureBox2.Width / 10 + 1 + (pictureBox2.Width / 10) / 4, (l) * pictureBox2.Height / 10 + 1 + (pictureBox2.Width / 10) / 4, pictureBox2.Width / 10 - 1 - (pictureBox2.Width / 10) / 2, pictureBox2.Height / 10 - 1 - (pictureBox2.Width / 10) / 2);
-                                    chgamer = chgamer + 1;
-                                    //SoundPlayer sp = new SoundPlayer("D:\\gun8.wav");
-                                    //sp.Play();
-                            }
-                            else if (comp[l, g] == 1 )
-                            {
-                                comp[l, g] = 3; hodgamer = true; hodkomp = true;
-                                gr2.FillRectangle(Brushes.Red, g * pictureBox2.Width / 10 + 1, l * pictureBox2.Height / 10 + 1, pictureBox2.Width / 10 - 1, pictureBox2.Height / 10 - 1);
-                                chgamer++;
-                                win++;
-                                //SoundPlayer sp = new SoundPlayer("@D:\\gun8.wma");
-                                //sp.Play();
-                            }
-                            else
-                            { 
-                                hodgamer = false; 
-                            }
-                        }
-                    }
+                Pair<int, int> pointCursor = GetPosition(e, pictureBox1);
+                if (comp[pointCursor.First, pointCursor.Second] == 0)
+                {
+                    comp[pointCursor.First, pointCursor.Second] = 2;
+                    hodgamer = true;
+                    hodkomp = false;
+                    //gr2.FillEllipse(Brushes.Blue, (g) * pictureBox2.Width / 10 + 1 + (pictureBox2.Width / 10) / 4, (l) * pictureBox2.Height / 10 + 1 + (pictureBox2.Width / 10) / 4, pictureBox2.Width / 10 - 1 - (pictureBox2.Width / 10) / 2, pictureBox2.Height / 10 - 1 - (pictureBox2.Width / 10) / 2);
+                    chgamer = chgamer + 1;
+                    //SoundPlayer sp = new SoundPlayer("D:\\gun8.wav");
+                    //sp.Play();
+                }
+                else if (comp[pointCursor.First, pointCursor.Second] == 1)
+                {
+                    comp[pointCursor.First, pointCursor.Second] = 3;
+                    hodgamer = true;
+                    hodkomp = true;
+                    //gr2.FillRectangle(Brushes.Red, g * pictureBox2.Width / 10 + 1, l * pictureBox2.Height / 10 + 1, pictureBox2.Width / 10 - 1, pictureBox2.Height / 10 - 1);
+                    chgamer++;
+                    win++;
+                    //SoundPlayer sp = new SoundPlayer("@D:\\gun8.wma");
+                    //sp.Play();
+                }
+                else
+                {
+                    hodgamer = false;
+                }
             }
 
-            if (hodkomp) hodgamer = false;
-                Random r = new Random();
-               
-                while (!hodkomp)
-                { 
-                    hodkomp = true;
-                    
-                    int i = r.Next(0, 10);
-                    int j = r.Next(0, 10);
-                    if (gamer[i, j] == 0)
-                    {
-                        gr.FillEllipse(Brushes.Blue, (j) * pictureBox1.Width / 10 + 1 + (pictureBox1.Width / 10) / 4, (i) * pictureBox1.Height / 10 + 1 + (pictureBox1.Width / 10) / 4, pictureBox1.Width / 10 - 1 - (pictureBox1.Width / 10) / 2, pictureBox1.Height / 10 - 1 - (pictureBox1.Width / 10) / 2);
-                        gamer[i, j] = 2; hodkomp = true;   hodgamer = false;
-                        chcomp = chcomp + 1;
-                        //SoundPlayer sp = new SoundPlayer("D:\\gun8.wav");
-                        //sp.Play();
-                   
-                    }
-                    else
-                        if (gamer[i, j] == 1)
-                        {
-                            gamer[i, j] = 3; hodkomp = true; hodgamer = true;
-                            gr.FillRectangle(Brushes.Red, j * pictureBox1.Width / 10+1, (i) * pictureBox1.Height / 10+1, pictureBox1.Width / 10-1, pictureBox1.Height / 10-1);
-                            chcomp = chcomp + 1;
-                            unwin = unwin + 1;
-                            hodkomp = false;
-                            //SoundPlayer sp = new SoundPlayer("@D:\\gun8.wma");
-                            //sp.Play();
-                        }
-                }
-             
-                
-                textBox2.Text = "";
-                for (int l = 0; l < comp.GetLength(0); l++)
-                {
-                    for (int g = 0; g < comp.GetLength(1); g++)
-                    { textBox2.Text += comp[l, g].ToString() + " "; }
-                    textBox2.Text += Environment.NewLine;
+            
 
-                }
 
-                textBox1.Text = "";
-                for (int i = 0; i < gamer.GetLength(0); i++)
-                {
-                    for (int j = 0; j < gamer.GetLength(1); j++)
-                    { textBox1.Text += gamer[i, j].ToString() + " "; }
-                    textBox1.Text += Environment.NewLine;
-                }
-                label1.Text = chgamer.ToString();
-                label2.Text = chcomp.ToString();
+
+            ShowMapToText(textBox1);
+            ShowMapToText(textBox2);
+
+            label1.Text = chgamer.ToString();
+            label2.Text = chcomp.ToString();
             //}
             pictureBox2.Image = bm2;
             pictureBox1.Image = bm;
@@ -646,14 +638,14 @@ namespace WindowsFormsApplication2
             //}
 
 
-            if ( win == 20) 
+            if (win == 20) 
             {
                 pictureBox1.Enabled = false;
                 pictureBox2.Enabled = false;
                 MessageBox.Show("Победа за нами, командир!");
                 label3.Text = "Победа за нами, командир!";
              }
-             if (unwin ==20)
+             if (unwin == 20)
              {
                  pictureBox1.Enabled = false;
                  pictureBox2.Enabled = false;
@@ -664,8 +656,20 @@ namespace WindowsFormsApplication2
              {
                  label3.Text = "Прямо в яблочко!";
              }
-
         } 
+
+        private void ShowMapToText(TextBox textBox)
+        {
+            textBox.Text = "";
+            for (int l = 0; l < comp.GetLength(0); l++)
+            {
+                for (int g = 0; g < comp.GetLength(1); g++)
+                {
+                    textBox.Text += comp[l, g].ToString() + " ";
+                }
+                textBox.Text += Environment.NewLine;
+            }
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {   win = 0; 
