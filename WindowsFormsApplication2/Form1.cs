@@ -38,7 +38,27 @@ namespace WindowsFormsApplication2
         int k3 = 2;
         int k2 = 3;
         int k1 = 4;
-        
+
+        public void DrawMap(Graphics gr, PictureBox pictureBox)
+        {
+            for (int i = 1; i < 12; i++)
+            {
+                gr.DrawLine(Pens.Black, i * pictureBox.Width / 10, 0, i * pictureBox.Width / 10, pictureBox.Height);
+                gr.DrawLine(Pens.Black, 0, i * pictureBox.Height / 10, pictureBox.Width, i * pictureBox.Height / 10);
+            }
+        }
+
+        public void ClearMap(int[,] map)
+        {
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    map[i, j] = 0;
+                }
+            }
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -49,37 +69,11 @@ namespace WindowsFormsApplication2
             bm2 = new Bitmap(pictureBox2.Width, pictureBox2.Height);
             gr2 = Graphics.FromImage(bm2);
 
-            for (int i = 1; i < 12; i++)
-            gr.DrawLine(Pens.Black, i * pictureBox1.Width / 10, 0, i * pictureBox1.Width / 10, pictureBox1.Height);
+            DrawMap(gr, pictureBox1);
+            DrawMap(gr2, pictureBox2);
 
-            gr.DrawLine(Pens.Black, pictureBox1.Width, 0, pictureBox1.Width, pictureBox1.Height);
-            
-            for (int j = 1 ; j < 12 ; j++)
-                gr.DrawLine(Pens.Black, 0, j * pictureBox1.Height / 10, pictureBox1.Width, j * pictureBox1.Height / 10);
-
-            for (int l = 1; l < 12; l++)
-                gr2.DrawLine(Pens.Black, l * pictureBox2.Width / 10, 0, l * pictureBox2.Width / 10, pictureBox2.Height);
-
-            gr2.DrawLine(Pens.Black, pictureBox2.Width, 0, pictureBox2.Width, pictureBox2.Height);
-
-            for (int g = 1; g < 12; g++)
-                gr2.DrawLine(Pens.Black, 0, g * pictureBox2.Height / 10, pictureBox2.Width, g * pictureBox2.Height / 10);
-
-            for (int i = 0; i < gamer.GetLength(0); i++)
-            {
-                for (int j = 0; j < gamer.GetLength(1); j++)
-                {
-                    gamer[i, j] = 0;
-                }
-            }
-
-            for (int l = 0; l < comp.GetLength(0); l++)
-            {
-                for (int g = 0; g < comp.GetLength(1); g++)
-                {
-                    comp[l, g] = 0;
-                }
-            }
+            ClearMap(gamer);
+            ClearMap(comp);
 
             pictureBox1.Image = bm;
             pictureBox2.Image = bm2;
@@ -543,51 +537,52 @@ namespace WindowsFormsApplication2
                 MessageBox.Show("Выберите вид корабля!");
             }
         }
+
         bool hodgamer = false;
         bool hodkomp = false;
+
+        public Pair<int, int> GetPosition(MouseEventArgs e, PictureBox pictureBox)
+        {
+            int WIDTH_BLOCK = pictureBox.Width / 10;
+            int HEIGHT_BLOCK = pictureBox.Height / 10;
+
+            return new Pair<int, int>(e.X / WIDTH_BLOCK, e.Y / HEIGHT_BLOCK);
+        }
+
         private void pictureBox2_MouseClick(object sender, MouseEventArgs e)
         {
-           
             if (hodgamer == false)
             {
                 hodgamer = true;
                 for (int l = 0; l < comp.GetLength(0); l++)
                     for (int g = 0; g < comp.GetLength(1); g++)
                     {
-                        for (g = 0; g < comp.GetLength(1); g++)
-                            if (hodgamer)
+                        if (hodgamer)
+                        {
+                            if (e.X > g * pictureBox2.Width / 10 & e.X < (g + 1) * pictureBox2.Width / 10 & e.Y > (l) * pictureBox2.Height / 10 & e.Y < (l + 1) * pictureBox2.Height / 10)
                             {
-                                if (e.X > g * pictureBox2.Width / 10 & e.X < (g + 1) * pictureBox2.Width / 10 & e.Y > (l) * pictureBox2.Height / 10 & e.Y < (l + 1) * pictureBox2.Height / 10)
-                               
+                                if (comp[l, g] == 0)   
                                 {
-                                     if (comp[l, g] == 0)   
-                                     {
-                                        comp[l, g] = 2; hodgamer = true; hodkomp = false;
-                                        gr2.FillEllipse(Brushes.Blue, (g) * pictureBox2.Width / 10 + 1 + (pictureBox2.Width / 10) / 4, (l) * pictureBox2.Height / 10 + 1 + (pictureBox2.Width / 10) / 4, pictureBox2.Width / 10 - 1 - (pictureBox2.Width / 10) / 2, pictureBox2.Height / 10 - 1 - (pictureBox2.Width / 10) / 2);
-                                         chgamer = chgamer + 1;
-                                         //SoundPlayer sp = new SoundPlayer("D:\\gun8.wav");
-                                         //sp.Play();
-                                        
-                                        
-                                    }else 
-                                    if (comp[l, g] == 1 )
-                                 {
-                                     comp[l, g] = 3; hodgamer = true; hodkomp = true;
-                                    gr2.FillRectangle(Brushes.Red, g * pictureBox2.Width / 10 + 1, l * pictureBox2.Height / 10 + 1, pictureBox2.Width / 10 - 1, pictureBox2.Height / 10 - 1);
+                                comp[l, g] = 2; hodgamer = true; hodkomp = false;
+                                gr2.FillEllipse(Brushes.Blue, (g) * pictureBox2.Width / 10 + 1 + (pictureBox2.Width / 10) / 4, (l) * pictureBox2.Height / 10 + 1 + (pictureBox2.Width / 10) / 4, pictureBox2.Width / 10 - 1 - (pictureBox2.Width / 10) / 2, pictureBox2.Height / 10 - 1 - (pictureBox2.Width / 10) / 2);
                                     chgamer = chgamer + 1;
-                                    win = win + 1;
-                                    SoundPlayer sp = new SoundPlayer("@D:\\gun8.wma");
-                                    sp.Play();
-
-                                            
-                                 }
-                                    else
-                                    { hodgamer = false; }
-                                     
-                                }
-
+                                    //SoundPlayer sp = new SoundPlayer("D:\\gun8.wav");
+                                    //sp.Play();
                             }
-                           
+                            else if (comp[l, g] == 1 )
+                            {
+                                comp[l, g] = 3; hodgamer = true; hodkomp = true;
+                                gr2.FillRectangle(Brushes.Red, g * pictureBox2.Width / 10 + 1, l * pictureBox2.Height / 10 + 1, pictureBox2.Width / 10 - 1, pictureBox2.Height / 10 - 1);
+                                chgamer++;
+                                win++;
+                                //SoundPlayer sp = new SoundPlayer("@D:\\gun8.wma");
+                                //sp.Play();
+                            }
+                            else
+                            { 
+                                hodgamer = false; 
+                            }
+                        }
                     }
             }
 
@@ -618,7 +613,7 @@ namespace WindowsFormsApplication2
                             unwin = unwin + 1;
                             hodkomp = false;
                             //SoundPlayer sp = new SoundPlayer("@D:\\gun8.wma");
-                            sp.Play();
+                            //sp.Play();
                         }
                 }
              
@@ -653,11 +648,11 @@ namespace WindowsFormsApplication2
 
             if ( win == 20) 
             {
-            pictureBox1.Enabled = false;
-            pictureBox2.Enabled = false;
-            MessageBox.Show("Победа за нами, командир!");
-            label3.Text = "Победа за нами, командир!";
-            }
+                pictureBox1.Enabled = false;
+                pictureBox2.Enabled = false;
+                MessageBox.Show("Победа за нами, командир!");
+                label3.Text = "Победа за нами, командир!";
+             }
              if (unwin ==20)
              {
                  pictureBox1.Enabled = false;
@@ -673,31 +668,22 @@ namespace WindowsFormsApplication2
         } 
 
         private void button1_Click(object sender, EventArgs e)
-        {  win = 0; 
+        {   win = 0; 
             unwin = 0;
+
             bm = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            bm2 = new Bitmap(pictureBox2.Width, pictureBox2.Height);
+
             gr = Graphics.FromImage(bm);
+            gr2 = Graphics.FromImage(bm2);
 
-            for (int i = 0; i < gamer.GetLength(0); i++)
-            {
-                for (int j = 0; j < gamer.GetLength(1); j++)
-                {
-                    gamer[i, j] = 0;
-                    comp[i, j] = 0;
-                }
-            }
+            ClearMap(gamer);
+            ClearMap(comp);
+                
+            DrawMap(gr, pictureBox1);
+            DrawMap(gr2, pictureBox2);
 
-            for (int i = 1; i < 12; i++)
-            {
-                gr.DrawLine(Pens.Black, i * pictureBox1.Width / 10, 0, i * pictureBox1.Width / 10, pictureBox1.Height);
-            }
-            for (int j = 1; j < 12; j++)
-            {
-                gr.DrawLine(Pens.Black, 0, j * pictureBox1.Height / 10, pictureBox1.Width, j * pictureBox1.Height / 10);
-            }
-            
             textBox1.Text = "";
-
             for (int i = 0; i < gamer.GetLength(0); i++)
             {
                 for (int j = 0; j < gamer.GetLength(1); j++)
@@ -727,21 +713,13 @@ namespace WindowsFormsApplication2
 
             pictureBox1.Image = bm;
 
-            bm2 = new Bitmap(pictureBox2.Width, pictureBox2.Height);
-            gr2 = Graphics.FromImage(bm2);
-            for (int l = 1; l < 12; l++)
-                gr2.DrawLine(Pens.Black, l * pictureBox2.Width / 10, 0, l * pictureBox2.Width / 10, pictureBox2.Height);
 
-            gr2.DrawLine(Pens.Black, pictureBox2.Width, 0, pictureBox2.Width, pictureBox2.Height);
-
-            for (int g = 1; g < 12; g++)
-                gr2.DrawLine(Pens.Black, 0, g * pictureBox2.Height / 10, pictureBox2.Width, g * pictureBox2.Height / 10);
             textBox2.Text = "";
 
             for (int l = 0; l < comp.GetLength(0); l++)
             {
                 for (int g = 0; g < comp.GetLength(1); g++)
-                { textBox2.Text += comp[l, g].ToString() + " "; }
+                    textBox2.Text += comp[l, g].ToString() + " "; 
                 textBox2.Text += Environment.NewLine;
 
             }
@@ -757,7 +735,6 @@ namespace WindowsFormsApplication2
 
         private void button2_Click(object sender, EventArgs e)
         {
-           
             int x_n = 0;
             int y_n = 0;
 
@@ -858,16 +835,6 @@ namespace WindowsFormsApplication2
 
             pictureBox2.Image = bm2;
             button2.Enabled = false; 
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -978,30 +945,7 @@ namespace WindowsFormsApplication2
             }
 
             pictureBox1.Image = bm;
-            label3.Text = "Пушки готовы к бою!";
-           
-            
+            label3.Text = "Пушки готовы к бою!"; 
         }
- 
-        private void pictureBox2_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
-
     }
 }
